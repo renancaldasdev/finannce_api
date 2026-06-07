@@ -1,9 +1,11 @@
 <?php
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -14,17 +16,43 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->redirectTo(function (Request $request) {
+            if ($request->is('api/*')) {
+                return null;
+            }
+
+            return '/login';
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*'),
         );
 
-        $exceptions->render(function (ValidationException $e) {
+        $exceptions->render(function (ValidationException $e, Request $request) {
+            Log::channel('auth')->warning('Falha de validação na API', [
+                'ip' => $request->ip(),
+                'url' => $request->fullUrl(),
+                'dados_enviados' => $request->except(['password', 'password_confirmation']),
+                'erros' => $e->errors(),
+            ]);
+
             return response()->json([
                 'status' => 'fail',
                 'errors' => $e->errors(),
             ], 422);
+        });
+
+        $exceptions->render(function (AuthenticationException $e, Request $request) {
+            Log::channel('auth')->warning('Acesso não autorizado', [
+                'ip' => $request->ip(),
+                'url' => $request->fullUrl(),
+                'token_fornecido' => $request->bearerToken() ? 'Sim' : 'Não',
+            ]);
+
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Acesso negado. Usuário não autenticado ou token inválido/expirado.',
+            ], 401);
         });
     })->create();
