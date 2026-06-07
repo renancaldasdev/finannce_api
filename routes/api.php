@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Account\CreateAccountController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogOutController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -19,4 +20,8 @@ Route::post('/register', RegisterController::class);
 Route::middleware('auth:sanctum')->group(function () {
     Route::put('/update', UpdateController::class);
     Route::post('/logout', LogOutController::class);
+
+    Route::prefix('accounts')->group(function () {
+        Route::post('/', CreateAccountController::class);
+    });
 });
