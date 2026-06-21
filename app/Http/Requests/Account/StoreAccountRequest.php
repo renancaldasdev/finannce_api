@@ -8,7 +8,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class CreateAccountRequest extends FormRequest
+class StoreAccountRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -55,7 +55,7 @@ class CreateAccountRequest extends FormRequest
 
             'type.required' => 'O campo tipo é obrigatório.',
             'type.string' => 'O tipo deve ser um texto válido.',
-            'type.in' => 'O tipo de conta selecionado é inválido.',
+            'type.in' => 'O tipo de conta selecionado é inválido. Contas possíveis: checking, savings, investment',
 
             'balance.required' => 'O campo saldo é obrigatório.',
             'balance.numeric' => 'O saldo deve ser um valor numérico válido.',

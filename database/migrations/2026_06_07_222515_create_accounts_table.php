@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('name');
-            $table->string('type')->default('checking');
+            $table->string('type')->default('checking'); // checking (corrente), savings (poupança)
             $table->bigInteger('balance')->default(0);
             $table->timestamps();
         });

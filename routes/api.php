@@ -1,6 +1,10 @@
 <?php
 
-use App\Http\Controllers\Account\CreateAccountController;
+use App\Http\Controllers\Account\DestroyAccountController;
+use App\Http\Controllers\Account\IndexAccountController;
+use App\Http\Controllers\Account\ShowAccountController;
+use App\Http\Controllers\Account\StoreAccountController;
+use App\Http\Controllers\Account\UpdateAccountController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogOutController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -22,6 +26,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', LogOutController::class);
 
     Route::prefix('accounts')->group(function () {
-        Route::post('/', CreateAccountController::class);
+        Route::get('/', IndexAccountController::class);
+        Route::get('/{account}', ShowAccountController::class);
+        Route::put('/{account}', UpdateAccountController::class);
+        Route::post('/', StoreAccountController::class);
+        Route::delete('/{account}', DestroyAccountController::class);
     });
 });

@@ -134,6 +134,13 @@ return [
             'replace_placeholders' => true,
         ],
 
+        'account' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/account.log'),
+            'level' => 'debug',
+            'replace_placeholders' => true,
+        ],
+
     ],
 
 ];

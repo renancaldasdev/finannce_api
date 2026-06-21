@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Account;
 
-use App\Http\Requests\Account\CreateAccountRequest;
+use App\Http\Requests\Account\StoreAccountRequest;
 use App\Http\Resources\AccountResource;
-use App\Services\Account\CreateAccountService;
+use App\Services\Account\StoreAccountService;
 
-class CreateAccountController
+class StoreAccountController
 {
     public function __construct(
-        private CreateAccountService $createAccountService
+        private StoreAccountService $storeAccountService
     ) {}
 
-    public function __invoke(CreateAccountRequest $request)
+    public function __invoke(StoreAccountRequest $request)
     {
         $data = $request->validated();
 
-        $account = $this->createAccountService->createAccount($request->user(), $data);
+        $account = $this->storeAccountService->execute($request->user(), $data);
 
         return response()->json([
             'success' => true,

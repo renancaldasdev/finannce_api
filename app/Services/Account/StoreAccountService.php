@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Account;
 
 use App\Models\Account;
 use App\Models\User;
 
-class CreateAccountService
+class StoreAccountService
 {
-    public function createAccount(User $user, array $data): Account
+    public function execute(User $user, array $data): Account
     {
         return Account::create([
             'user_id' => $user->id,
