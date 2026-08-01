@@ -9,7 +9,9 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogOutController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\UpdateController;
+use App\Http\Controllers\Category\IndexCategoryController;
 use Illuminate\Support\Facades\Route;
+
 
 Route::get('/ping', function () {
     return response()->json([
@@ -31,5 +33,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/{account}', UpdateAccountController::class);
         Route::post('/', StoreAccountController::class);
         Route::delete('/{account}', DestroyAccountController::class);
+    });
+
+    Route::prefix('categories')->group(function () {
+        Route::get('/', IndexCategoryController::class);
     });
 });
