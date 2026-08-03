@@ -2,18 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\Category;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Password;
 
-class UpdateRequest extends FormRequest
+class StoreCategoryRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
@@ -30,36 +26,36 @@ class UpdateRequest extends FormRequest
             'name' => [
                 'required',
                 'string',
+                'min:3',
                 'max:255',
+                Rule::unique('categories', 'name')->where(function ($query) {
+                    return $query->where('user_id', $this->user()->id)
+                        ->where('type', $this->input('type'));
+                }),
             ],
-            'email' => [
+            'type' => [
                 'required',
                 'string',
-                'email',
-                'max:255',
-                Rule::unique('users')->ignore($this->user()->id),
+                Rule::in(['income', 'expense']),
             ],
-            'password' => [
+            'description' => [
                 'nullable',
                 'string',
-                'min:8',
-                Password::min(8)
-                    ->letters()
-                    ->mixedCase()
-                    ->numbers()
-                    ->symbols(),
             ],
         ];
     }
-
     public function messages(): array
     {
         return [
             'name.required' => 'O campo nome é obrigatório.',
+            'name.string' => 'O nome deve ser um texto válido.',
+            'name.min' => 'O nome deve ter no mínimo 3 caracteres.',
             'name.max' => 'O nome não pode ter mais de 255 caracteres.',
-            'email.required' => 'O campo e-mail é obrigatório.',
-            'email.email' => 'Insira um endereço de e-mail válido.',
-            'email.unique' => 'Não foi possível atualizar sua conta com o e-mail fornecido.',
+            'name.unique' => 'Você já possui uma categoria com este nome para este tipo.',
+
+            'type.required' => 'O campo tipo é obrigatório.',
+            'type.string' => 'O tipo deve ser um texto válido.',
+            'type.in' => 'O tipo de conta selecionado é inválido. Categorias possíveis: income, expense',
         ];
     }
 }

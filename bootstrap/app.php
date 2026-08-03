@@ -32,7 +32,7 @@ return Application::configure(basePath: dirname(__DIR__))
         );
 
         $exceptions->render(function (ValidationException $e, Request $request) {
-            Log::channel('auth')->warning('Falha de validação na API', [
+            Log::warning('Falha de validação na API', [
                 'ip' => $request->ip(),
                 'url' => $request->fullUrl(),
                 'dados_enviados' => $request->except(['password', 'password_confirmation']),
@@ -61,10 +61,11 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         $exceptions->render(function (NotFoundHttpException $e, Request $request) {
-            Log::channel('account')->warning('Recurso não encontrado!', [
+            Log::warning('Recurso não encontrado!', [
                 'ip' => $request->ip(),
                 'url' => $request->fullUrl(),
                 'token_fornecido' => $request->bearerToken() ? 'Sim' : 'Não',
+                'error' => $e->getMessage()
             ]);
 
             return response()->json([
@@ -74,7 +75,7 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         $exceptions->render(function (AccessDeniedHttpException $e, Request $request) {
-            Log::channel('account')->warning('Acesso não autorizado', [
+            Log::warning('Acesso não autorizado', [
                 'ip' => $request->ip(),
                 'url' => $request->fullUrl(),
                 'token_fornecido' => $request->bearerToken() ? 'Sim' : 'Não',

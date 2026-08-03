@@ -9,7 +9,12 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogOutController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\UpdateController;
+use App\Http\Controllers\Category\DestroyCategoryController;
 use App\Http\Controllers\Category\IndexCategoryController;
+use App\Http\Controllers\Category\ShowCategoryController;
+use App\Http\Controllers\Category\StoreCategoryController;
+use App\Http\Controllers\Category\UpdateCategoryController;
+use App\Services\Category\DestroyCategoryService;
 use Illuminate\Support\Facades\Route;
 
 
@@ -37,5 +42,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('categories')->group(function () {
         Route::get('/', IndexCategoryController::class);
+        Route::get('/{category}', ShowCategoryController::class);
+        Route::post('/', StoreCategoryController::class);
+        Route::put('/{category}', UpdateCategoryController::class);
+        Route::delete('/{category}', DestroyCategoryController::class);
     });
 });

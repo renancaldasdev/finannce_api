@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Account;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Account\StoreAccountRequest;
 use App\Http\Resources\AccountResource;
 use App\Services\Account\StoreAccountService;
 
-class StoreAccountController
+class StoreAccountController extends Controller
 {
     public function __construct(
         private StoreAccountService $storeAccountService

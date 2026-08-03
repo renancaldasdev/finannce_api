@@ -14,6 +14,13 @@ class Category extends Model
 {
     use HasFactory;
 
+    protected function casts(): array
+    {
+        return [
+            'active' => 'boolean',
+        ];
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

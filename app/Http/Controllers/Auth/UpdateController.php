@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\UpdateRequest;
 use App\Http\Resources\UserResource;
 use App\Services\Auth\UpdateService;
 use Illuminate\Http\JsonResponse;
 
-class UpdateController
+class UpdateController extends Controller
 {
     public function __construct(
         private UpdateService $updateService
@@ -24,11 +25,12 @@ class UpdateController
             $validatedData
         );
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Alterações realizadas com sucesso.',
-            'data' => new UserResource($user),
-        ]
+        return response()->json(
+            [
+                'status' => 'success',
+                'message' => 'Alterações realizadas com sucesso.',
+                'data' => new UserResource($user),
+            ]
         );
     }
 }
