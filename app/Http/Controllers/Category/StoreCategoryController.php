@@ -29,6 +29,6 @@ class StoreCategoryController extends Controller
             'success' => true,
             'message' => 'Categoria criada com sucesso!',
             'data' => new CategoryResource($category),
-        ]);
+        ], 201);
     }
 }

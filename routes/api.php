@@ -14,9 +14,12 @@ use App\Http\Controllers\Category\IndexCategoryController;
 use App\Http\Controllers\Category\ShowCategoryController;
 use App\Http\Controllers\Category\StoreCategoryController;
 use App\Http\Controllers\Category\UpdateCategoryController;
-use App\Services\Category\DestroyCategoryService;
+use App\Http\Controllers\Transaction\DestroyTransactionController;
+use App\Http\Controllers\Transaction\IndexTransactionController;
+use App\Http\Controllers\Transaction\ShowTransactionController;
+use App\Http\Controllers\Transaction\StoreTransactionController;
+use App\Http\Controllers\Transaction\UpdateTransactionController;
 use Illuminate\Support\Facades\Route;
-
 
 Route::get('/ping', function () {
     return response()->json([
@@ -46,5 +49,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', StoreCategoryController::class);
         Route::put('/{category}', UpdateCategoryController::class);
         Route::delete('/{category}', DestroyCategoryController::class);
+    });
+
+    Route::prefix('transactions')->group(function () {
+        Route::get('/', IndexTransactionController::class);
+        Route::get('/{transaction}', ShowTransactionController::class);
+        Route::post('/', StoreTransactionController::class);
+        Route::put('/{transaction}', UpdateTransactionController::class);
+        Route::delete('/{transaction}', DestroyTransactionController::class);
     });
 });
