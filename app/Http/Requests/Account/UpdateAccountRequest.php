@@ -17,8 +17,19 @@ class UpdateAccountRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'min:3', 'max:255'],
-            'type' => ['required', 'string', Rule::in(['checking', 'savings', 'investment'])],
+            'name' => [
+                'required',
+                'string',
+                'min:3',
+                'max:255',
+                Rule::unique('accounts', 'name')
+                    ->ignore($this->route('account'))
+                    ->where(function ($query) {
+                        return $query->where('user_id', $this->user()->id)
+                            ->where('type', $this->input('type'));
+                    }),
+            ],
+            'type' => ['required', 'string', Rule::in(['checking', 'saving', 'investment'])],
         ];
     }
 

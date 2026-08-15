@@ -11,6 +11,6 @@ class IndexAccountService
 {
     public function execute(User $user): Collection
     {
-        return $user->accounts()->latest()->get();
+        return $user->accounts()->orderBy('id', 'asc')->get();
     }
 }

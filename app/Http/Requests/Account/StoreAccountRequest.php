@@ -31,11 +31,15 @@ class StoreAccountRequest extends FormRequest
                 'string',
                 'min:3',
                 'max:255',
+                Rule::unique('accounts', 'name')->where(function ($query) {
+                    return $query->where('user_id', $this->user()->id)
+                        ->where('type', $this->input('type'));
+                }),
             ],
             'type' => [
                 'required',
                 'string',
-                Rule::in(['checking', 'savings', 'investment']),
+                Rule::in(['checking', 'saving', 'investment']),
             ],
             'balance' => [
                 'required',
@@ -52,6 +56,7 @@ class StoreAccountRequest extends FormRequest
             'name.string' => 'O nome deve ser um texto válido.',
             'name.min' => 'O nome deve ter no mínimo 3 caracteres.',
             'name.max' => 'O nome não pode ter mais de 255 caracteres.',
+            'name.unique' => 'Não pode ser cadastrada uma conta com o mesmo nome e tipo.',
 
             'type.required' => 'O campo tipo é obrigatório.',
             'type.string' => 'O tipo deve ser um texto válido.',
