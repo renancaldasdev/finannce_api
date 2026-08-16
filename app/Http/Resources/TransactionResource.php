@@ -20,6 +20,7 @@ class TransactionResource extends JsonResource
             'type' => $this->type,
             'date' => $this->date,
             'description' => $this->description,
+            'is_paid' => (bool) $this->is_paid,
 
             'account_id' => $this->account_id,
             'category_id' => $this->category_id,

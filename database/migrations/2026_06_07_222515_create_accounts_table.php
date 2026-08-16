@@ -19,6 +19,7 @@ return new class extends Migration
             $table->bigInteger('balance')->default(0);
             $table->unique(['user_id', 'name', 'type']);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

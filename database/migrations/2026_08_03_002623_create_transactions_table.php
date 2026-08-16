@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->boolean('is_paid');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

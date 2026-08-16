@@ -11,6 +11,6 @@ class IndexCategoryService
 {
     public function execute(User $user): Collection
     {
-        return $user->categories()->latest()->get();
+        return $user->categories()->orderBy('id', 'asc')->get();
     }
 }

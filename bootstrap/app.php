@@ -13,8 +13,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         // web: __DIR__.'/../routes/web.php',
-        api: __DIR__ . '/../routes/api.php',
-        commands: __DIR__ . '/../routes/console.php',
+        api: __DIR__.'/../routes/api.php',
+        commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
@@ -28,7 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
-            fn(Request $request) => $request->is('api/*'),
+            fn (Request $request) => $request->is('api/*'),
         );
 
         $exceptions->render(function (ValidationException $e, Request $request) {
@@ -50,8 +50,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 'ip' => $request->ip(),
                 'url' => $request->fullUrl(),
                 'token_fornecido' => $request->bearerToken() ? 'Sim' : 'Não',
-                'erros' => $e->errors(),
-
+                'error' => $e->getMessage(), // Correção: substituído $e->errors() por $e->getMessage()
             ]);
 
             return response()->json([
@@ -65,7 +64,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 'ip' => $request->ip(),
                 'url' => $request->fullUrl(),
                 'token_fornecido' => $request->bearerToken() ? 'Sim' : 'Não',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return response()->json([
@@ -79,7 +78,6 @@ return Application::configure(basePath: dirname(__DIR__))
                 'ip' => $request->ip(),
                 'url' => $request->fullUrl(),
                 'token_fornecido' => $request->bearerToken() ? 'Sim' : 'Não',
-
             ]);
 
             return response()->json([

@@ -9,23 +9,17 @@ use App\Models\Transaction;
 
 class TransactionObserver
 {
-    /**
-     * Handle the Transaction "created" event.
-     */
     public function created(Transaction $transaction): void
     {
         if ($transaction->is_paid) {
             $this->processBalance(
                 $transaction->account_id,
                 $transaction->type,
-                $transaction->amount
+                (int) $transaction->getAttributes()['amount']
             );
         }
     }
 
-    /**
-     * Handle the Transaction "updated" event.
-     */
     public function updated(Transaction $transaction): void
     {
         if (! $transaction->wasChanged(['amount', 'type', 'is_paid', 'account_id'])) {
@@ -34,9 +28,9 @@ class TransactionObserver
 
         if ($transaction->getOriginal('is_paid')) {
             $this->processBalance(
-                $transaction->getOriginal('account_id'),
-                $transaction->getOriginal('type'),
-                $transaction->getOriginal('amount'),
+                (int) $transaction->getOriginal('account_id'),
+                (string) $transaction->getOriginal('type'),
+                (int) $transaction->getRawOriginal('amount'),
                 true
             );
         }
@@ -45,37 +39,28 @@ class TransactionObserver
             $this->processBalance(
                 $transaction->account_id,
                 $transaction->type,
-                $transaction->amount
+                (int) $transaction->getAttributes()['amount']
             );
         }
     }
 
-    /**
-     * Handle the Transaction "deleted" event.
-     */
     public function deleted(Transaction $transaction): void
     {
         if ($transaction->is_paid) {
             $this->processBalance(
                 $transaction->account_id,
                 $transaction->type,
-                $transaction->amount,
+                (int) $transaction->getAttributes()['amount'],
                 true
             );
         }
     }
 
-    /**
-     * Handle the Transaction "restored" event.
-     */
     public function restored(Transaction $transaction): void
     {
         //
     }
 
-    /**
-     * Handle the Transaction "force deleted" event.
-     */
     public function forceDeleted(Transaction $transaction): void
     {
         //
@@ -85,12 +70,12 @@ class TransactionObserver
     {
         $account = Account::find($accountId);
 
-        if ($type === 'income') {
-            $account->balance = $reverse ? $account->balance - $amount : $account->balance + $amount;
-        } else {
-            $account->balance = $reverse ? $account->balance + $amount : $account->balance - $amount;
-        }
+        $isAddition = ($type === 'income' && ! $reverse) || ($type === 'expense' && $reverse);
 
-        $account->save();
+        if ($isAddition) {
+            $account->increment('balance', $amount);
+        } else {
+            $account->decrement('balance', $amount);
+        }
     }
 }

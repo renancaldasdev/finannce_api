@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable(
     [
@@ -17,18 +18,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
         'type',
         'date',
         'description',
-        'is_paid'
+        'is_paid',
     ]
 )]
 class Transaction extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected function amount(): Attribute
     {
         return Attribute::make(
-            get: fn(int $value) => $value / 100,
-            set: fn(float|int $value) => (int) round($value * 100),
+            get: fn (int $value) => $value / 100,
+            set: fn (float|int $value) => (int) round($value * 100),
         );
     }
 
