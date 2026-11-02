@@ -18,9 +18,7 @@ class Account extends Model
 
     protected function casts(): array
     {
-        return [
-            'balance' => 'integer',
-        ];
+        return [];
     }
 
     public function user(): BelongsTo

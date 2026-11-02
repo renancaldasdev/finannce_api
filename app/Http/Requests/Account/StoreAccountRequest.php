@@ -60,11 +60,18 @@ class StoreAccountRequest extends FormRequest
 
             'type.required' => 'O campo tipo é obrigatório.',
             'type.string' => 'O tipo deve ser um texto válido.',
-            'type.in' => 'O tipo de conta selecionado é inválido. Contas possíveis: checking, savings, investment',
+            'type.in' => 'O tipo de conta selecionado é inválido. Contas possíveis: checking, saving, investment',
 
             'balance.required' => 'O campo saldo é obrigatório.',
             'balance.numeric' => 'O saldo deve ser um valor numérico válido.',
             'balance.min' => 'O saldo inicial não pode ser negativo.',
         ];
+    }
+
+    protected function passedValidation(): void
+    {
+        $this->merge([
+            'balance' => (float) $this->input('balance'),
+        ]);
     }
 }

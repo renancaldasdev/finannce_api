@@ -84,6 +84,7 @@ test('observer updates balance on amount change', function () {
     $transaction->update(['amount' => 30.00]);
 
     expect($account->fresh()->balance)->toEqual(70);
+    expect($transaction->fresh()->getRawOriginal('amount'))->toBe(3000);
 });
 
 test('observer handles is_paid status changes', function () {
@@ -109,4 +110,55 @@ test('observer handles is_paid status changes', function () {
     $transaction->update(['is_paid' => false]);
 
     expect($account->fresh()->balance)->toEqual(100);
+});
+
+test('observer updates balance when transaction type changes', function () {
+    $user = User::factory()->create();
+    $account = Account::factory()->for($user)->create(['balance' => 100]);
+    $expenseCategory = Category::factory()->for($user)->create(['type' => 'expense']);
+    $incomeCategory = Category::factory()->for($user)->create(['type' => 'income']);
+
+    $transaction = Transaction::factory()->for($account)->for($expenseCategory)->create([
+        'type' => 'expense',
+        'amount' => 30.00,
+        'is_paid' => true,
+    ]);
+
+    // Balance should be 70 after expense
+    expect($account->fresh()->balance)->toEqual(70);
+
+    // Change transaction type from expense to income
+    $transaction->update([
+        'type' => 'income',
+        'category_id' => $incomeCategory->id,
+    ]);
+
+    // Balance should increase by 30 twice: revert the expense (-30) and apply income (+30)
+    // 70 + 30 + 30 = 130
+    expect($account->fresh()->balance)->toEqual(130);
+});
+
+test('observer updates balance when transaction moves to another account', function () {
+    $user = User::factory()->create();
+    $accountA = Account::factory()->for($user)->create(['balance' => 100]);
+    $accountB = Account::factory()->for($user)->create(['balance' => 50]);
+    $category = Category::factory()->for($user)->create(['type' => 'expense']);
+
+    $transaction = Transaction::factory()->for($accountA)->for($category)->create([
+        'type' => 'expense',
+        'amount' => 20.00,
+        'is_paid' => true,
+    ]);
+
+    // Balance should be 80 on account A
+    expect($accountA->fresh()->balance)->toEqual(80);
+    expect($accountB->fresh()->balance)->toEqual(50);
+
+    // Move transaction to account B
+    $transaction->update(['account_id' => $accountB->id]);
+
+    // Account A should revert the expense: 80 + 20 = 100
+    expect($accountA->fresh()->balance)->toEqual(100);
+    // Account B should apply the expense: 50 - 20 = 30
+    expect($accountB->fresh()->balance)->toEqual(30);
 });

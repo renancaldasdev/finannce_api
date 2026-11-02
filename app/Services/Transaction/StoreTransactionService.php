@@ -22,7 +22,7 @@ class StoreTransactionService
             'user_id' => $user->id,
             'account_id'  => $data['account_id'],
             'category_id' => $data['category_id'],
-            'amount' => (int) round($data['amount'] * 100),
+            'amount' => $data['amount'],
             'type' => $data['type'],
             'date' => $data['date'],
             'description' => $data['description'],
@@ -46,13 +46,11 @@ class StoreTransactionService
             throw new BadRequestHttpException('A conta selecionada não pertence a você.');
         }
 
-        $amountInCents = (int) round($data['amount'] * 100);
-
-        if ($account->balance < $amountInCents) {
+        if ($account->balance < $data['amount']) {
             throw new BadRequestHttpException(
                 sprintf(
                     'Saldo insuficiente. Disponível: R$ %.2f. Valor da transação: R$ %.2f.',
-                    $account->balance / 100,
+                    $account->balance,
                     $data['amount']
                 )
             );

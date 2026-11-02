@@ -6,6 +6,7 @@ namespace App\Observers;
 
 use App\Models\Account;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\DB;
 
 class TransactionObserver
 {
@@ -27,11 +28,10 @@ class TransactionObserver
         }
 
         if ($transaction->getOriginal('is_paid')) {
-            $originalAmount = $transaction->getOriginal('amount');
             $this->processBalance(
                 $transaction->getOriginal('account_id'),
                 $transaction->getOriginal('type'),
-                is_numeric($originalAmount) ? (int)($originalAmount * 100) : 0,
+                (int)($transaction->getOriginal('amount') * 100),
                 true
             );
         }
@@ -69,14 +69,16 @@ class TransactionObserver
 
     private function processBalance(int $accountId, string $type, int $amount, bool $reverse = false): void
     {
-        $account = Account::find($accountId);
+        DB::transaction(function () use ($accountId, $type, $amount, $reverse) {
+            $account = Account::lockForUpdate()->findOrFail($accountId);
 
-        $isAddition = ($type === 'income' && ! $reverse) || ($type === 'expense' && $reverse);
+            $isAddition = ($type === 'income' && ! $reverse) || ($type === 'expense' && $reverse);
 
-        if ($isAddition) {
-            $account->increment('balance', $amount);
-        } else {
-            $account->decrement('balance', $amount);
-        }
+            if ($isAddition) {
+                $account->increment('balance', $amount);
+            } else {
+                $account->decrement('balance', $amount);
+            }
+        });
     }
 }

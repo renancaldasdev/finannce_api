@@ -26,9 +26,7 @@ class Transaction extends Model
 
     protected function casts(): array
     {
-        return [
-            'amount' => 'integer',
-        ];
+        return [];
     }
 
     public function user(): BelongsTo

@@ -11,15 +11,11 @@ class StoreAccountService
 {
     public function execute(User $user, array $data): Account
     {
-        $balanceInCents = isset($data['balance'])
-            ? (int) round($data['balance'] * 100)
-            : 0;
-
         return Account::create([
             'user_id' => $user->id,
             'name' => $data['name'],
             'type' => $data['type'],
-            'balance' => $balanceInCents,
+            'balance' => $data['balance'] ?? 0,
         ]);
     }
 }

@@ -52,21 +52,21 @@ class UpdateTransactionService
             throw new BadRequestHttpException('A conta selecionada não pertence a você.');
         }
 
-        $expectedBalance = $account->balance;
+        $expectedBalanceInCents = (int) round($account->balance * 100);
 
         if ($originalWasPaid && ($originalType === 'expense' || $originalAmount !== $newAmountInCents || $transaction->account_id !== $data['account_id'])) {
-            $expectedBalance += $originalAmount;
+            $expectedBalanceInCents += $originalAmount;
         }
 
         if ($newWillBePaid && $newType === 'expense') {
-            $expectedBalance -= $newAmountInCents;
+            $expectedBalanceInCents -= $newAmountInCents;
         }
 
-        if ($expectedBalance < 0) {
+        if ($expectedBalanceInCents < 0) {
             throw new BadRequestHttpException(
                 sprintf(
                     'Saldo insuficiente. Saldo disponível após reversão: R$ %.2f. Valor da transação: R$ %.2f.',
-                    $expectedBalance / 100,
+                    $expectedBalanceInCents / 100,
                     $data['amount']
                 )
             );
