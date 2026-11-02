@@ -57,7 +57,7 @@ class StoreTransactionTransferService
         }
 
         if ($originAccount->id === $destinationAccount->id) {
-            throw new BadRequestHttpException('A conta de origem e destino não podem ser a mesma.');
+            throw new BadRequestHttpException('As contas de origem e destino não podem ser a mesma.');
         }
 
         $amountInCents = (int) round($data['amount'] * 100);
@@ -65,7 +65,7 @@ class StoreTransactionTransferService
         if ($originAccount->balance < $amountInCents) {
             throw new BadRequestHttpException(
                 sprintf(
-                    'Saldo insuficiente na conta de origem. Saldo disponível: R$ %.2f. Valor da transferência: R$ %.2f',
+                    'Saldo insuficiente na conta de origem. Saldo disponível: R$ %.2f. Valor da transferência: R$ %.2f.',
                     $originAccount->balance / 100,
                     $data['amount']
                 )

@@ -19,7 +19,7 @@ class UpdateTransactionService
         }
 
         if ($transaction->is_paid) {
-            throw new BadRequestHttpException('Transações já pagas não podem ser alteradas.');
+            throw new BadRequestHttpException('Transações pagas não podem ser alteradas. Para corrigir, delete esta transação e crie uma nova.');
         }
 
         $this->validateBalance($user, $transaction, $data);
@@ -65,7 +65,7 @@ class UpdateTransactionService
         if ($expectedBalance < 0) {
             throw new BadRequestHttpException(
                 sprintf(
-                    'Saldo insuficiente. Disponível após reversão: R$ %.2f. Transação: R$ %.2f',
+                    'Saldo insuficiente. Saldo disponível após reversão: R$ %.2f. Valor da transação: R$ %.2f.',
                     $expectedBalance / 100,
                     $data['amount']
                 )

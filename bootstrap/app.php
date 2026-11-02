@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -50,7 +51,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 'ip' => $request->ip(),
                 'url' => $request->fullUrl(),
                 'token_fornecido' => $request->bearerToken() ? 'Sim' : 'Não',
-                'error' => $e->getMessage(), // Correção: substituído $e->errors() por $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return response()->json([
@@ -84,5 +85,18 @@ return Application::configure(basePath: dirname(__DIR__))
                 'status' => 'fail',
                 'message' => $e->getMessage(),
             ], 403);
+        });
+
+        $exceptions->render(function (BadRequestHttpException $e, Request $request) {
+            Log::warning('Requisição inválida', [
+                'ip' => $request->ip(),
+                'url' => $request->fullUrl(),
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'status' => 'fail',
+                'message' => $e->getMessage(),
+            ], 400);
         });
     })->create();

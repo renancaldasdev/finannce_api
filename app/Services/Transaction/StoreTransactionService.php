@@ -51,7 +51,7 @@ class StoreTransactionService
         if ($account->balance < $amountInCents) {
             throw new BadRequestHttpException(
                 sprintf(
-                    'Saldo insuficiente. Disponível: R$ %.2f. Transação: R$ %.2f',
+                    'Saldo insuficiente. Disponível: R$ %.2f. Valor da transação: R$ %.2f.',
                     $account->balance / 100,
                     $data['amount']
                 )
