@@ -15,7 +15,7 @@ class TransactionObserver
             $this->processBalance(
                 $transaction->account_id,
                 $transaction->type,
-                $transaction->amount
+                (int)($transaction->amount * 100)
             );
         }
     }
@@ -27,10 +27,11 @@ class TransactionObserver
         }
 
         if ($transaction->getOriginal('is_paid')) {
+            $originalAmount = $transaction->getOriginal('amount');
             $this->processBalance(
                 $transaction->getOriginal('account_id'),
                 $transaction->getOriginal('type'),
-                $transaction->getOriginal('amount'),
+                is_numeric($originalAmount) ? (int)($originalAmount * 100) : 0,
                 true
             );
         }
@@ -39,7 +40,7 @@ class TransactionObserver
             $this->processBalance(
                 $transaction->account_id,
                 $transaction->type,
-                $transaction->amount
+                (int)($transaction->amount * 100)
             );
         }
     }
@@ -50,7 +51,7 @@ class TransactionObserver
             $this->processBalance(
                 $transaction->account_id,
                 $transaction->type,
-                $transaction->amount,
+                (int)($transaction->amount * 100),
                 true
             );
         }

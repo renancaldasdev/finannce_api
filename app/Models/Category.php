@@ -32,4 +32,9 @@ class Category extends Model
     {
         return $this->hasMany(Transaction::class);
     }
+
+    public function scopeActive($query)
+    {
+        return $query->where('active', true);
+    }
 }

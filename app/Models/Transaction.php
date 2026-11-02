@@ -45,4 +45,19 @@ class Transaction extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    public function getAmountAttribute($value): float
+    {
+        return $value / 100;
+    }
+
+    public function setAmountAttribute($value): void
+    {
+        $this->attributes['amount'] = (int)($value * 100);
+    }
+
+    public function scopePaid($query)
+    {
+        return $query->where('is_paid', true);
+    }
 }

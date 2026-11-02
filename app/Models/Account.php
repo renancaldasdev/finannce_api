@@ -32,4 +32,14 @@ class Account extends Model
     {
         return $this->hasMany(Transaction::class);
     }
+
+    public function getBalanceAttribute($value): float
+    {
+        return $value / 100;
+    }
+
+    public function setBalanceAttribute($value): void
+    {
+        $this->attributes['balance'] = (int)($value * 100);
+    }
 }
