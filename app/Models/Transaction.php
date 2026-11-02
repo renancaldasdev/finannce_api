@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -25,12 +24,11 @@ class Transaction extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected function amount(): Attribute
+    protected function casts(): array
     {
-        return Attribute::make(
-            get: fn (int $value) => $value / 100,
-            set: fn (float|int $value) => (int) round($value * 100),
-        );
+        return [
+            'amount' => 'integer',
+        ];
     }
 
     public function user(): BelongsTo

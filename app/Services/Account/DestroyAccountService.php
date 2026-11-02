@@ -16,6 +16,6 @@ class DestroyAccountService
             throw new AccessDeniedHttpException('Você não tem permissão para excluir esta conta.');
         }
 
-        $account->delete($account->id);
+        $account->delete();
     }
 }

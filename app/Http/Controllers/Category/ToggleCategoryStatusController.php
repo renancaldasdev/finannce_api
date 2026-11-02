@@ -7,14 +7,14 @@ namespace App\Http\Controllers\Category;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
-use App\Services\Category\ToogleCategoryStatusService;
+use App\Services\Category\ToggleCategoryStatusService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class ToogleCategoryStatusController extends Controller
+class ToggleCategoryStatusController extends Controller
 {
     public function __construct(
-        private readonly ToogleCategoryStatusService $deactiveCategory
+        private readonly ToggleCategoryStatusService $deactiveCategory
     ) {}
 
     public function __invoke(Request $request, Category $category): JsonResponse

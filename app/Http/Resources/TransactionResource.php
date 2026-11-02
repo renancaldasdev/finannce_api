@@ -16,7 +16,7 @@ class TransactionResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'amount' => $this->amount,
+            'amount' => $this->amount / 100,
             'type' => $this->type,
             'date' => $this->date,
             'description' => $this->description,

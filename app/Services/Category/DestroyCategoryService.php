@@ -13,7 +13,7 @@ class DestroyCategoryService
     public function execute(User $user, Category $category): void
     {
         if ($category->user_id !== $user->id) {
-            throw new AccessDeniedHttpException('Você não tem permissão para excluir esta conta.');
+            throw new AccessDeniedHttpException('Você não tem permissão para excluir esta categoria.');
         }
 
         $category->delete();

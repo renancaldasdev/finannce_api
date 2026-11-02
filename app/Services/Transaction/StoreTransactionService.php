@@ -8,6 +8,7 @@ use App\Models\Account;
 use App\Models\Category;
 use App\Models\Transaction;
 use App\Models\User;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class StoreTransactionService
 {
@@ -15,6 +16,8 @@ class StoreTransactionService
         User $user,
         array $data
     ): Transaction {
+        $this->validateBalance($user, $data);
+
         $transaction = Transaction::create([
             'user_id' => $user->id,
             'account_id'  => $data['account_id'],
@@ -29,5 +32,30 @@ class StoreTransactionService
         $transaction->refresh();
 
         return $transaction;
+    }
+
+    private function validateBalance(User $user, array $data): void
+    {
+        if (! $data['is_paid'] || $data['type'] !== 'expense') {
+            return;
+        }
+
+        $account = Account::findOrFail($data['account_id']);
+
+        if ($account->user_id !== $user->id) {
+            throw new BadRequestHttpException('A conta selecionada não pertence a você.');
+        }
+
+        $amountInCents = (int) round($data['amount'] * 100);
+
+        if ($account->balance < $amountInCents) {
+            throw new BadRequestHttpException(
+                sprintf(
+                    'Saldo insuficiente. Disponível: R$ %.2f. Transação: R$ %.2f',
+                    $account->balance / 100,
+                    $data['amount']
+                )
+            );
+        }
     }
 }

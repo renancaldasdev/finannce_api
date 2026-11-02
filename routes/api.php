@@ -13,7 +13,7 @@ use App\Http\Controllers\Category\DestroyCategoryController;
 use App\Http\Controllers\Category\IndexCategoryController;
 use App\Http\Controllers\Category\ShowCategoryController;
 use App\Http\Controllers\Category\StoreCategoryController;
-use App\Http\Controllers\Category\ToogleCategoryStatusController;
+use App\Http\Controllers\Category\ToggleCategoryStatusController;
 use App\Http\Controllers\Category\UpdateCategoryController;
 use App\Http\Controllers\Transaction\DestroyTransactionController;
 use App\Http\Controllers\Transaction\IndexTransactionController;
@@ -51,7 +51,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', StoreCategoryController::class);
         Route::put('/{category}', UpdateCategoryController::class);
         Route::delete('/{category}', DestroyCategoryController::class);
-        Route::patch('/{category}/toogle-status', ToogleCategoryStatusController::class);
+        Route::patch('/{category}/toggle-status', ToggleCategoryStatusController::class);
     });
 
     Route::prefix('transactions')->group(function () {

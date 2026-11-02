@@ -8,12 +8,12 @@ use App\Models\Category;
 use App\Models\User;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-class ToogleCategoryStatusService
+class ToggleCategoryStatusService
 {
     public function execute(User $user, Category $category): Category
     {
         if ($category->user_id !== $user->id) {
-            throw new AccessDeniedHttpException('Você não tem permissão para excluir esta conta.');
+            throw new AccessDeniedHttpException('Você não tem permissão para alterar esta categoria.');
         }
 
         $category->update([
