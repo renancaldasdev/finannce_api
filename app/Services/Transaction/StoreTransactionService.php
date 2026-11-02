@@ -22,7 +22,7 @@ class StoreTransactionService
             'user_id' => $user->id,
             'account_id'  => $data['account_id'],
             'category_id' => $data['category_id'],
-            'amount' => $data['amount'],
+            'amount' => (int) round($data['amount'] * 100),
             'type' => $data['type'],
             'date' => $data['date'],
             'description' => $data['description'],

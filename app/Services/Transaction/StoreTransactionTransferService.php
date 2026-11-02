@@ -17,11 +17,13 @@ class StoreTransactionTransferService
         $this->validateTransfer($user, $data);
 
         DB::transaction(function () use ($user, $data) {
+            $amountInCents = (int) round($data['amount'] * 100);
+
             Transaction::create([
                 'user_id' => $user->id,
                 'account_id' => $data['origin_account_id'],
                 'category_id' => $data['origin_category_id'],
-                'amount' => $data['amount'],
+                'amount' => $amountInCents,
                 'type' => 'expense',
                 'date' => $data['date'],
                 'description' => $data['description'] ?? 'Transferência enviada',
@@ -32,7 +34,7 @@ class StoreTransactionTransferService
                 'user_id' => $user->id,
                 'account_id' => $data['destination_account_id'],
                 'category_id' => $data['destination_category_id'],
-                'amount' => $data['amount'],
+                'amount' => $amountInCents,
                 'type' => 'income',
                 'date' => $data['date'],
                 'description' => $data['description'] ?? 'Transferência recebida',

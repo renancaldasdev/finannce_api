@@ -22,7 +22,7 @@ class UpdateTransactionService
 
         $transaction->account_id = $data['account_id'];
         $transaction->category_id = $data['category_id'];
-        $transaction->amount = $data['amount'];
+        $transaction->amount = (int) round($data['amount'] * 100);
         $transaction->type = $data['type'];
         $transaction->date = $data['date'];
         $transaction->is_paid = $data['is_paid'];
