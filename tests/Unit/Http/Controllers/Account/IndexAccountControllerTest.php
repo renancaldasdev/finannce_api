@@ -10,8 +10,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Tests\TestCase;
 
-uses(TestCase::class);
-
 test('controller returns success status in response', function () {
     $user = Mockery::mock(User::class);
     $accounts = new Collection([]);
