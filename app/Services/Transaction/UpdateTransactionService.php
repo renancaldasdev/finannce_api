@@ -18,6 +18,10 @@ class UpdateTransactionService
             throw new AccessDeniedHttpException('Você não tem permissão para alterar esta transação.');
         }
 
+        if ($transaction->is_paid) {
+            throw new BadRequestHttpException('Transações já pagas não podem ser alteradas.');
+        }
+
         $this->validateBalance($user, $transaction, $data);
 
         $transaction->account_id = $data['account_id'];
